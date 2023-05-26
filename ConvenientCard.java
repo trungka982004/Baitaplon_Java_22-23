@@ -1,4 +1,5 @@
-public class ConvenientCard implements Payment{ //the tien loi implement Payment
+//the tien loi implement Payment
+public class ConvenientCard implements Payment{ 
 	// code here
 	
     private String type;
@@ -14,11 +15,13 @@ public class ConvenientCard implements Payment{ //the tien loi implement Payment
 	}
 
 	@Override
-	public double checkBalance(){ //tra ve so du 
+	//ham lay so du 
+	public double checkBalance(){ 
 		return  this.soDuTK;
 	}
 	@Override
-	public boolean pay(double amount){ // ham kiem tra co thanh toan thanh cong hay ko 
+	//ham check da thanh toan thanh cong hay khong
+	public boolean pay(double amount){
 		double soTienThanhToan = 0.0;
 		if(type.equals("Student")){
 			soTienThanhToan = amount;
@@ -37,7 +40,7 @@ public class ConvenientCard implements Payment{ //the tien loi implement Payment
 		return false;
 	}
 
-	public ConvenientCard(IDCard theDinhDanh) throws CannotCreateCard{ //ham xac dinh loai the dua tren so tuoi
+	public ConvenientCard(IDCard theDinhDanh) throws CannotCreateCard{
 		String date = theDinhDanh.getDayOfBirth();
 		String year = date.substring(6, 10);
 		int age = 2023 - Integer.parseInt(year);
@@ -51,7 +54,8 @@ public class ConvenientCard implements Payment{ //the tien loi implement Payment
 	}
 
 	@Override
-	public String toString(){ // ham in theo format
+	//in theo format
+	public String toString(){ 
 		return theDinhDanh.toString() + ", " + type + ", " +  soDuTK;
 	}
 }

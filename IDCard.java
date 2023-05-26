@@ -18,6 +18,9 @@ public class IDCard { //The dinh danh
       public String getDayOfBirth(){ // lay ngay thang nam
             return dayOfBirth;
       }
+      public int getSoDinhDanh(){
+            return soDinhDanh;
+      }
       
       public String toString(){ //in theo format
             return soDinhDanh + ", " + hoTen + ", " + sex + ", " + dayOfBirth + ", " + address + ", " + phoneNumber;
