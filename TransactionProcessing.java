@@ -17,60 +17,39 @@ public class TransactionProcessing {
 
     // Requirement 3
     public boolean readPaymentObject(String path) {
-        //code here
-        // try{
-        //     File f = new File(path);
-        //     Scanner myReader = new Scanner(f);
-        //     while(myReader.hasNextLine()){
-        //         String data = myReader.nextLine();
-        //         System.out.println(data);
-        //     }
-        //     myReader.close();
-        // } catch (FileNotFoundException e){
-        //     System.out.println("error");
-        //     e.printStackTrace();
-        // } 
-        // return true; 
-
         paymentObjects = new ArrayList<>();
-        try(BufferReader br = new BufferReader(new FileReader(path))){
-            String line;
-            while((line = br.readLine()) != null){
-                Payment payment = null;
-                String[] data = line.split(",");
-                if(data.length ==2){
-                    int soDinhDanh = Integer.parseInt(data[0]);
-                    double ls = Double.parseDouble(data[1]);
-                    payment = new BankAccount(soDinhDanh,ls);
-                }
-                else if(data.length ==1 && line.length() ==7){
-                    int sdt = Integer.parseInt(data[0]);
-                    payment = new EWallet(sdt);
-                }
-                else if ( data.length == 1 && line.length()==6){
-                    int id = Integer.parseInt(data[0]);
-                    ArrayList<IDCard> idcards = idcm.getIDcards();
-                    IDCard timThay = null;
-                    for(IDCard theDinhDanh : idcards){
-                        if(idcard.getSoDinhDanh() == id){
-                            timThay = idCard;
-                        }
-                    }
-                    if(timThay != null){
-                        try{
-                            payment = new ConvenientCard(timThay);
-                        } catch (CannotCreateCard e){
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                paymentObjects.add(payment);
+        File file = new File(path);
+        try{
+            Scanner paymentObjects = new Scanner(file);
+            while(paymentObjects.hasNextLine()){
+                String line = paymentObjects.nextLine();
+                 System.out.println(line);
             }
-            return true;
-        } catch (IOException e){
+            paymentObjects.close();
+
+            String[] parts = paymentObject.split(",");
+            if(parts.length == 2 ){
+                Payment pm = new BankAccount(soTK, rate);
+                String paymentObject = paymentObjects.add(pm);
+            }
+            if(parts.length == 1 ){
+                if((parts.length).length() == 7){
+                    Payment ew = new EWallet(phoneNumber);
+                    String paymentObject = paymentObjects.add(pm);
+                }
+                if((parts.length).length() == 6){
+                    Payment ew = new ConvenientCard(theDinhDanh);
+                    String paymentObject = paymentObjects.add(pm);
+                }
+            }
+            
+            
+
+        } catch (FileNotFoundException e){
             e.printStackTrace();
             return false;
         }
+        return  true;
     }
     // Requirement 4
     public ArrayList<ConvenientCard> getAdultConvenientCards() {
