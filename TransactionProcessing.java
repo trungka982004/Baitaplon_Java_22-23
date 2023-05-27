@@ -17,37 +17,44 @@ public class TransactionProcessing {
 
     // Requirement 3
     public boolean readPaymentObject(String path) {
-        paymentObjects = new ArrayList<>();
+        ArrayList<Payment> paymentObjectsList = new ArrayList<>();
         File file = new File(path);
         try{
             Scanner paymentObjects = new Scanner(file);
             while(paymentObjects.hasNextLine()){
                 String line = paymentObjects.nextLine();
-                 System.out.println(line);
-            }
-            paymentObjects.close();
-
-            String[] parts = paymentObject.split(",");
+                System.out.println(line);
+                String[] parts = paymentObjects.split(",");
             if(parts.length == 2 ){
                 Payment pm = new BankAccount(soTK, rate);
-                String paymentObject = paymentObjects.add(pm);
+
             }
             if(parts.length == 1 ){
                 if((parts.length).length() == 7){
-                    Payment ew = new EWallet(phoneNumber);
-                    String paymentObject = paymentObjects.add(pm);
+                    Payment pm = new EWallet(phoneNumber);
+
                 }
                 if((parts.length).length() == 6){
-                    Payment ew = new ConvenientCard(theDinhDanh);
-                    String paymentObject = paymentObjects.add(pm);
+                    int id = Interger.parseInt(parts[0]);
+                    ArrayList<IDCard> idcard = idcm.getIDCards();
+                    try{
+                        for(IDCard idcard :idCards){
+                            if( id == idcm.getSoDinhDanh() ){
+                                IDCard theDinhDanh = idcard;
+                            }
+                        }
+                        Payment ew = new ConvenientCard(theDinhDanh);
+
+                    } catch (CannotCreateCard e){
+                        e.printStackTrace();
+                    }
+                    
                 }
             }
-            
-            
-
         } catch (FileNotFoundException e){
-            e.printStackTrace();
-            return false;
+                e.printStackTrace();
+                return false;
+            }
         }
         return  true;
     }
