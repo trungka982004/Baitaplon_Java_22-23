@@ -7,7 +7,7 @@ public class BankAccount implements Payment, Transfer{
     public BankAccount(int sTK, double rate){
         this.soTK =soTK;
         this.rate = rate;
-        soDuTK = 50;
+        this.soDuTK = 50;
     }
     @Override
     public double checkBalance(){
@@ -52,7 +52,7 @@ public class BankAccount implements Payment, Transfer{
 		return soDuTK +=amount;
 	}
     public String toString(){
-        return soTK + ", " + rate + ", " +  checkBalance();
+        return soTK + "," + rate + "," + soDuTK;
 
     }
 }

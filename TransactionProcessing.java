@@ -17,46 +17,54 @@ public class TransactionProcessing {
 
     // Requirement 3
     public boolean readPaymentObject(String path) {
-        ArrayList<Payment> paymentObjectsList = new ArrayList<>();
-        File file = new File(path);
-        try{
-            Scanner paymentObjects = new Scanner(file);
-            while(paymentObjects.hasNextLine()){
-                String line = paymentObjects.nextLine();
-                System.out.println(line);
-                String[] parts = paymentObjects.split(",");
-            if(parts.length == 2 ){
-                Payment pm = new BankAccount(soTK, rate);
-
-            }
-            if(parts.length == 1 ){
-                if((parts.length).length() == 7){
-                    Payment pm = new EWallet(phoneNumber);
-
-                }
-                if((parts.length).length() == 6){
-                    int id = Interger.parseInt(parts[0]);
-                    ArrayList<IDCard> idcard = idcm.getIDCards();
-                    try{
-                        for(IDCard idcard :idCards){
-                            if( id == idcm.getSoDinhDanh() ){
-                                IDCard theDinhDanh = idcard;
-                            }
-                        }
-                        Payment ew = new ConvenientCard(theDinhDanh);
-
-                    } catch (CannotCreateCard e){
-                        e.printStackTrace();
-                    }
+            paymentObjects = new ArrayList<>();
+            File file = new File(path);
+            try {
+                Scanner paymentObjectsScanner = new Scanner(file);
+                while (paymentObjectsScanner.hasNextLine()) {
+                    String line = paymentObjectsScanner.nextLine();
+                    String[] parts = line.split(",");
                     
-                }
-            }
-        } catch (FileNotFoundException e){
+                    if (parts.length == 2) {
+                        int soTK = Integer.parseInt(parts[0]);
+                        double rate = Double.parseDouble(parts[1]);
+                        Payment pm = new BankAccount(soTK, rate);
+                        paymentObjects.add(pm);
+                    }
+                    else if (parts.length == 1) {
+                        if (parts[0].length() == 7) {
+                            int phoneNumber = Integer.parseInt( parts[0]);
+                            Payment pm = new EWallet(phoneNumber);
+                            paymentObjects.add(pm);
+                        }
+                        else if (parts[0].length() == 6) {
+                            try {
+                                int soDinhDanh = Integer.parseInt(parts[0]);
+                                ArrayList<IDCard> idCards = idcm.getIDCards();
+                                IDCard card = null;
+                                for (IDCard idCard : idCards) {
+                                    if (idCard.getSoDinhDanh() == soDinhDanh){
+                                        try{
+                                            Payment pm = new ConvenientCard(idCard);
+                                            paymentObjects.add(pm);
+                                        } catch (CannotCreateCard e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    
+                                } 
+                            
+                            } catch (NumberFormatException e){
+                                e.printStackTrace();
+                            } 
+                    paymentObjectsScanner.close();
+                    return true;
+                } 
+            } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 return false;
             }
-        }
-        return  true;
+            return true;
     }
     // Requirement 4
     public ArrayList<ConvenientCard> getAdultConvenientCards() {

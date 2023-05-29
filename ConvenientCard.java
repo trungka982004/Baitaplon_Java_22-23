@@ -56,6 +56,6 @@ public class ConvenientCard implements Payment{
 	@Override
 	//in theo format
 	public String toString(){ 
-		return theDinhDanh.toString() + ", " + type + ", " +  soDuTK;
+		return theDinhDanh + "," + type  + "," + soDuTK;
 	}
 }

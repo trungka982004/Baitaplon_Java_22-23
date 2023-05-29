@@ -5,12 +5,12 @@ public class EWallet implements Payment, Transfer {
 
 	public EWallet(int phoneNumber){
 		this.phoneNumber = phoneNumber;
-		this.soDuTK= 0;
+		this.soDuTK=0;
 	}
 
 	@Override
 	public double checkBalance(){
-		return  soDuTK;
+		return  this.soDuTK;
 	}
 	public boolean pay(double amount){
 		double soTienThanhToan = amount;
@@ -52,6 +52,6 @@ public class EWallet implements Payment, Transfer {
 		return soDuTK +=amount;
 	}
 	public String toString(){
-        return phoneNumber + ", " +  soDuTK;
+        return phoneNumber + "," + soDuTK;
     }
 }

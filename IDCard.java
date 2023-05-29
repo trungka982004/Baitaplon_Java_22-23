@@ -23,6 +23,6 @@ public class IDCard { //The dinh danh
       }
       
       public String toString(){ //in theo format
-            return soDinhDanh + ", " + hoTen + ", " + sex + ", " + dayOfBirth + ", " + address + ", " + phoneNumber;
+            return soDinhDanh + "," + hoTen + "," + sex + "," + dayOfBirth + "," + address + "," + phoneNumber;
       }
 }
