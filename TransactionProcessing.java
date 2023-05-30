@@ -63,7 +63,18 @@ public class TransactionProcessing {
     // Requirement 4
     public ArrayList<ConvenientCard> getAdultConvenientCards() {
         //code here
-        return null;
+        ArrayList<ConvenientCard> adultsCards = new ArrayList<>();
+
+        
+        for(Payment pm : paymentObjects) {
+            if(pm instanceof ConvenientCard) {
+                ConvenientCard card = (ConvenientCard) pm;
+                if(card.getType().equals("Adult")) {
+                    adultsCards.add(card);
+                }
+            }
+        }
+        return adultsCards;
     }
 
     // Requirement 5
