@@ -10,7 +10,7 @@ public class ConvenientCard implements Payment{
 		return this.type;
 	}
 	
-	public void deposit(double amount){ //tien nap
+	public void topUp(double amount){ //tien nap
 		soDuTK += amount;
 	}
 
@@ -51,6 +51,10 @@ public class ConvenientCard implements Payment{
 		} else {
 			this.type = "Adult";
 		}
+
+
+		this.theDinhDanh = theDinhDanh;
+		this.soDuTK = 100;
 	}
 
 	@Override

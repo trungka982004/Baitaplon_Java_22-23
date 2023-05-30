@@ -24,48 +24,42 @@ public class TransactionProcessing {
                 while (paymentObjectsScanner.hasNextLine()) {
                     String line = paymentObjectsScanner.nextLine();
                     String[] parts = line.split(",");
-                    
-                    if (parts.length == 2) {
-                        int soTK = Integer.parseInt(parts[0]);
+                    Payment pm = null;
+
+                    if(parts.length == 2){
+                        int soDinhDanh = Integer.parseInt(parts[0]);
                         double rate = Double.parseDouble(parts[1]);
-                        Payment pm = new BankAccount(soTK, rate);
-                        paymentObjects.add(pm);
+                        pm = new BankAccount(soDinhDanh, rate);
                     }
-                    else if (parts.length == 1) {
-                        if (parts[0].length() == 7) {
-                            int phoneNumber = Integer.parseInt( parts[0]);
-                            Payment pm = new EWallet(phoneNumber);
-                            paymentObjects.add(pm);
+                    else if (parts.length == 1 && parts[0].length() == 7 ){
+                        int phoneNumber = Integer.parseInt(parts[0]);
+                        pm = new EWallet(phoneNumber);
+                    }
+                    else if(parts.length == 1 && parts[0].length() == 6) {
+                        int id = Integer.parseInt(parts[0]);
+                        ArrayList<IDCard> idCards = idcm.getIDCards();
+                        IDCard card = null;
+                        for(IDCard IDCard : idCards){
+                            if(IDCard.getSoDinhDanh() == id) {
+                                card = IDCard;
+                            }
                         }
-                        else if (parts[0].length() == 6) {
-                            try {
-                                int soDinhDanh = Integer.parseInt(parts[0]);
-                                ArrayList<IDCard> idCards = idcm.getIDCards();
-                                IDCard card = null;
-                                for (IDCard idCard : idCards) {
-                                    if (idCard.getSoDinhDanh() == soDinhDanh){
-                                        try{
-                                            Payment pm = new ConvenientCard(idCard);
-                                            paymentObjects.add(pm);
-                                        } catch (CannotCreateCard e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    
-                                } 
-                            
-                            } catch (NumberFormatException e){
+                        if(card != null) {
+                            try{
+                                pm = new ConvenientCard(card);
+                            } catch (CannotCreateCard e) {
                                 e.printStackTrace();
-                            } 
-                    paymentObjectsScanner.close();
-                    return true;
-                } 
-            } catch (FileNotFoundException e) {
+                            }
+                        }
+                    }
+                    paymentObjects.add(pm);
+                }
+                return true;
+            } catch(IOException e) {
                 e.printStackTrace();
                 return false;
-            }
-            return true;
-    }
+            }    
+    }       
     // Requirement 4
     public ArrayList<ConvenientCard> getAdultConvenientCards() {
         //code here

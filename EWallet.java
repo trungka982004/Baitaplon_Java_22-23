@@ -18,10 +18,9 @@ public class EWallet implements Payment, Transfer {
 			soDuTK -= soTienThanhToan;
 			return true;
 		}
-		else{
-			soTienThanhToan = amount;
+
 			return false;
-		}
+
 	}
 	
 	public boolean transfer(double amount, Transfer to){
