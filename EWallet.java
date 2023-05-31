@@ -7,7 +7,9 @@ public class EWallet implements Payment, Transfer {
 		this.phoneNumber = phoneNumber;
 		this.soDuTK=0;
 	}
-
+	public int getPhoneNumber(){
+		return phoneNumber;
+	}
 	@Override
 	public double checkBalance(){
 		return  this.soDuTK;

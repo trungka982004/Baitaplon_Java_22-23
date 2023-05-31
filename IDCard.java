@@ -21,7 +21,9 @@ public class IDCard { //The dinh danh
       public int getSoDinhDanh(){
             return soDinhDanh;
       }
-      
+      public int getPhoneNumber(){
+            return phoneNumber;
+      }
       public String toString(){ //in theo format
             return soDinhDanh + "," + hoTen + "," + sex + "," + dayOfBirth + "," + address + "," + phoneNumber;
       }

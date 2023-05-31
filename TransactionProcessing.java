@@ -80,17 +80,140 @@ public class TransactionProcessing {
     // Requirement 5
     public ArrayList<IDCard> getCustomersHaveBoth() {
         //code here
-        return null;
+        ArrayList<IDCard> customersHaveBoth = new ArrayList<>();
+        ArrayList<IDCard> idCards = idcm.getIDCards();
+        for(IDCard card : idcm.getIDCards()){
+            // int demTK =0;
+            boolean hasBankAccount = false;
+            boolean hasConvenientCard = false;
+            boolean hasEWallet = false;
+            for(Payment pm : paymentObjects) {
+                if(pm instanceof BankAccount){
+                    BankAccount ba = (BankAccount) pm;
+                    if(ba.getSoTK()==card.getSoDinhDanh()){
+                        hasBankAccount=true;
+                    }
+                }
+                else if(pm instanceof EWallet){
+                    EWallet ew = (EWallet) pm;
+                    if(ew.getPhoneNumber() == card.getPhoneNumber()){
+                        hasEWallet =true;
+                    }
+                }
+                else if(pm instanceof ConvenientCard) {
+                    try{
+                        ConvenientCard cc1 = (ConvenientCard) pm;
+                        ConvenientCard newCCard = new ConvenientCard(card);
+                        String stringIdCard = newCCard.toString();
+                        String cc1String = cc1.toString();
+
+                        if(stringIdCard.equals(cc1String)){
+                            hasConvenientCard=true;
+                        } 
+                    } catch (CannotCreateCard e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+            if(hasBankAccount && hasEWallet && hasConvenientCard){
+                customersHaveBoth.add(card);
+            }
+        }
+        return customersHaveBoth;
     }
 
     // Requirement 6
     public void processTopUp(String path) {
         //code here
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))){
+            String line;
+            while((line = reader.readLine()) != null){
+                String[] parts = line.split(",");
+                String typeCard = parts[0];
+                int soTK = Integer.parseInt(parseInt[1]);
+                double amount = Double.parseDouble(parseInt[2]);
+                
+                if(typeCard.equals("EW")){
+                    for(Payment pm : paymentObjects) {
+                        if(pm instanceof EWallet) {
+                            EWallet e = (EWallet) pm;
+                            if(e.getPhoneNumber() == soTK){
+                                e.topUp(amount);
+                            }
+                        }
+                    }
+                }
+                else if(typeCard.equals("BA")){
+                    for(Payment pm : paymentObjects ) {
+                        if(pm instanceof BankAccount) {
+                            BankAccount b = (BankAccount) pm;
+                            if(b.getSoTK() == soTK) {
+                                b.topUp(amount);
+                            } 
+                        }
+                    }
+                }
+                else if(typeCard.equals("CC")){
+                    for(Payment pm : paymentObjects) {
+                        if(pm instanceof ConvenientCard) {
+                            ConvenientCard c = (ConvenientCard) pm;
+                            IDCard IDCard = c.getIDCard();
+                            if(IDCard.getSoDinhDanh() == soTK){
+                                c.topUp(amount);
+                            }
+                        }
+                    }
+                }
+            } 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     // Requirement 7
     public ArrayList<Bill> getUnsuccessfulTransactions(String path) {
         //code here
+        ArrayList<Bill> paySuccessful = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))){
+            String line;
+            while((line = reader.readLine()) != null){
+                String[] parts = line.split(",");
+                String typeCard = parts[3];
+                int thongTinTK = Integer.parseInt(parts[4]);
+                boolean hasPayEwalletSuccessful = true;
+                boolean hasPayBankAccountSuccessful = true;
+                boolean hasPayConvenientCardSuccessful = true;
+                if(typeCard.equals("EW")){
+                    for(Payment pm : paymentObjects){
+                        if(pm instanceof EWallet){
+                            EWallet ew = (EWallet) pm;
+                            if(ew.getPhoneNumber == thongTinTK){
+                                ew.pay(amount);
+                            }
+                            else hasPayEwalletSuccessful = false;
+                        }
+                    }
+                }
+                else if(typeCard.equals("BA")){
+                    for(Payment pm : paymentObjects){
+                        if(pm instanceof BankAccount){
+                            BankAccount ba = (BankAccount) pm;
+                            if(ba.soTK == thongTinTK){
+                                ba.pay(amount);
+                            }
+                            else hasPayBankAccountSuccessful = false;
+                        }
+                    }
+                }
+                else if(typeCard.equals("CC")){
+
+                }
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

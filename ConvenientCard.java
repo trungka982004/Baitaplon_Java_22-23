@@ -13,7 +13,9 @@ public class ConvenientCard implements Payment{
 	public void topUp(double amount){ //tien nap
 		soDuTK += amount;
 	}
-
+	public IDCard getIDCard(){
+		return theDinhDanh;
+	}
 	@Override
 	//ham lay so du 
 	public double checkBalance(){ 

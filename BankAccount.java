@@ -9,6 +9,9 @@ public class BankAccount implements Payment, Transfer{
         this.rate = rate;
         this.soDuTK = 50;
     }
+	public int getSoTK(){
+		return soTK;
+	}
     @Override
     public double checkBalance(){
 		return  this.soDuTK;
