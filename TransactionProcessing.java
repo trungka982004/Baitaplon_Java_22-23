@@ -182,17 +182,17 @@ public class TransactionProcessing {
                 String[] parts = line.split(",");
                 String typeCard = parts[3];
                 int thongTinTK = Integer.parseInt(parts[4]);
-                boolean hasPayEwalletSuccessful = true;
-                boolean hasPayBankAccountSuccessful = true;
-                boolean hasPayConvenientCardSuccessful = true;
+                // boolean hasPayEwalletSuccessful = true;
+                // boolean hasPayBankAccountSuccessful = true;
+                // boolean hasPayConvenientCardSuccessful = true;
+                int count = 0;
                 if(typeCard.equals("EW")){
                     for(Payment pm : paymentObjects){
                         if(pm instanceof EWallet){
                             EWallet ew = (EWallet) pm;
-                            if(ew.getPhoneNumber == thongTinTK){
-                                ew.pay(amount);
+                            if(ew.getPhoneNumber == thongTinTK && !ew.pay(amount)){
+                                count=0;
                             }
-                            else hasPayEwalletSuccessful = false;
                         }
                     }
                 }
