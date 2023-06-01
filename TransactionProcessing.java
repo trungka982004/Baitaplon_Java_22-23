@@ -175,28 +175,29 @@ public class TransactionProcessing {
     // Requirement 7
     public ArrayList<Bill> getUnsuccessfulTransactions(String path) {
         //code here
-        paymentObjects = new ArrayList<>();
         ArrayList<Bill> payUnSuccessful = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(path))){
             String line;
-            double amount = 0;
             while((line = reader.readLine()) != null){
                 String[] parts = line.split(",");
                 int billID = Integer.parseInt(parts[0]);
                 double total = Double.parseDouble(parts[1]);
                 String payFor = parts[2];
                 String typeCard = parts[3];
-                int thongTinTK = Integer.parseInt(parts[4]);
-                int count = 0;
-                boolean hasBankAccount = false;
-                boolean hasConvenientCard = false;
-                boolean hasEWallet = false;
+                int inForAccount = Integer.parseInt(parts[4]);
+                int count=0;
+                double amount = total;
                 if(typeCard.equals("EW")){
                     for(Payment pm : paymentObjects){
                         if(pm instanceof EWallet){
                             EWallet ew = (EWallet) pm;
-                            if(ew.getPhoneNumber() == thongTinTK && ew.pay(amount)){
-                                hasEWallet = true;
+                            
+                            if(ew.getPhoneNumber() == inForAccount){
+                                if(!ew.pay(amount)){
+                                    
+                                    count++;
+                                }
+                                
                             }
                         }
                     }
@@ -205,8 +206,12 @@ public class TransactionProcessing {
                     for(Payment pm : paymentObjects){
                         if(pm instanceof BankAccount){
                             BankAccount ba = (BankAccount) pm;
-                            if(ba.getSoTK() == thongTinTK && ba.pay(amount)){
-                                hasBankAccount = true;
+                            
+                            if(ba.getSoTK() == inForAccount){
+                                if(!ba.pay(amount)){
+                                    
+                                    count++;
+                                }
                             }
                         }
                     }
@@ -214,17 +219,21 @@ public class TransactionProcessing {
                 else if(typeCard.equals("CC")){
                     for(Payment pm : paymentObjects){
                         if(pm instanceof ConvenientCard) {
-                                ConvenientCard cc = (ConvenientCard) pm;
-                                IDCard idCards = cc.getIDCard();
-                                if(idCards.getSoDinhDanh() == thongTinTK && cc.pay(amount)){
-                                    hasConvenientCard = true;
+                            ConvenientCard cc = (ConvenientCard) pm;
+                            IDCard idCards = cc.getIDCard();
+                            
+                            if(idCards.getSoDinhDanh() == inForAccount ){
+
+                                if(!cc.pay(amount)){
+                                    count++;
                                 }
+                            }
 
                         }
                     }
                 }
 
-                if(hasEWallet && hasBankAccount && hasConvenientCard){
+                if(count!=3){
                     Bill bill = new Bill( billID,  total,  payFor);
                     payUnSuccessful.add(bill);
                 }
@@ -238,9 +247,41 @@ public class TransactionProcessing {
     // Requirement 8
     public ArrayList<BankAccount> getLargestPaymentByBA(String path) {
         //code here
-        return null;
-    }
+        ArrayList<BankAccount> largestPaymentByBA = new ArrayList<>();
+        double maxPay = 0;
+        try(BufferedReader reader  = new BufferedReader(new FileReader(path))){
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");                    
+                int billID = Integer.parseInt(parts[0]);
+                double total = Double.parseDouble(parts[1]);
+                String payFor = parts[2];
+                String typeCard = parts[3];
+                int inForAccount = Integer.parseInt(parts[4]);
+                
+                if(typeCard.equals("BA")){
+                    for(Payment pm : paymentObjects){
+                        if(pm instanceof BankAccount){
+                            BankAccount ba = (BankAccount) pm;
+                            if(inForAccount == ba.getSoTK()){
+                                ba.pay(total);
+                                if( total > maxPay){
+                                    maxPay = total;
+                                    largestPaymentByBA.clear();
+;                                    largestPaymentByBA.add(ba);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+        } catch (IOException e){
+            e.printStackTrace();
+        }
 
+        return largestPaymentByBA;
+    }
     //Requirement 9
     public void processTransactionWithDiscount(String path) {
         //code here
