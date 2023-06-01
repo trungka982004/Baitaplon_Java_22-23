@@ -131,8 +131,8 @@ public class TransactionProcessing {
             while((line = reader.readLine()) != null){
                 String[] parts = line.split(",");
                 String typeCard = parts[0];
-                int soTK = Integer.parseInt(parseInt[1]);
-                double amount = Double.parseDouble(parseInt[2]);
+                int soTK = Integer.parseInt(parts[1]);
+                double amount = Double.parseDouble(parts[2]);
                 
                 if(typeCard.equals("EW")){
                     for(Payment pm : paymentObjects) {
@@ -175,23 +175,28 @@ public class TransactionProcessing {
     // Requirement 7
     public ArrayList<Bill> getUnsuccessfulTransactions(String path) {
         //code here
-        ArrayList<Bill> paySuccessful = new ArrayList<>();
+        paymentObjects = new ArrayList<>();
+        ArrayList<Bill> payUnSuccessful = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(path))){
             String line;
+            double amount = 0;
             while((line = reader.readLine()) != null){
                 String[] parts = line.split(",");
+                int billID = Integer.parseInt(parts[0]);
+                double total = Double.parseDouble(parts[1]);
+                String payFor = parts[2];
                 String typeCard = parts[3];
                 int thongTinTK = Integer.parseInt(parts[4]);
-                // boolean hasPayEwalletSuccessful = true;
-                // boolean hasPayBankAccountSuccessful = true;
-                // boolean hasPayConvenientCardSuccessful = true;
                 int count = 0;
+                boolean hasBankAccount = false;
+                boolean hasConvenientCard = false;
+                boolean hasEWallet = false;
                 if(typeCard.equals("EW")){
                     for(Payment pm : paymentObjects){
                         if(pm instanceof EWallet){
                             EWallet ew = (EWallet) pm;
-                            if(ew.getPhoneNumber == thongTinTK && !ew.pay(amount)){
-                                count=0;
+                            if(ew.getPhoneNumber() == thongTinTK && ew.pay(amount)){
+                                hasEWallet = true;
                             }
                         }
                     }
@@ -200,21 +205,34 @@ public class TransactionProcessing {
                     for(Payment pm : paymentObjects){
                         if(pm instanceof BankAccount){
                             BankAccount ba = (BankAccount) pm;
-                            if(ba.soTK == thongTinTK){
-                                ba.pay(amount);
+                            if(ba.getSoTK() == thongTinTK && ba.pay(amount)){
+                                hasBankAccount = true;
                             }
-                            else hasPayBankAccountSuccessful = false;
                         }
                     }
                 }
                 else if(typeCard.equals("CC")){
+                    for(Payment pm : paymentObjects){
+                        if(pm instanceof ConvenientCard) {
+                                ConvenientCard cc = (ConvenientCard) pm;
+                                IDCard idCards = cc.getIDCard();
+                                if(idCards.getSoDinhDanh() == thongTinTK && cc.pay(amount)){
+                                    hasConvenientCard = true;
+                                }
 
+                        }
+                    }
+                }
+
+                if(hasEWallet && hasBankAccount && hasConvenientCard){
+                    Bill bill = new Bill( billID,  total,  payFor);
+                    payUnSuccessful.add(bill);
                 }
             }
         } catch(IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return payUnSuccessful;
     }
 
     // Requirement 8
