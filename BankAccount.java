@@ -1,45 +1,45 @@
 public class BankAccount implements Payment, Transfer{
     // code here
-    private int soTK;
+    private int accountNumber;
     private double rate;
-    private double soDuTK;
+    private double balance;
 
-    public BankAccount(int soTK, double rate){
-        this.soTK =soTK;
+    public BankAccount(int accountNumber, double rate){
+        this.accountNumber =accountNumber;
         this.rate = rate;
-        this.soDuTK = 50.0;
+        this.balance = 50.0;
     }
-	public int getSoTK(){
-		return soTK;
+	public int getAccountNumber(){
+		return accountNumber;
 	}
     @Override
     public double checkBalance(){
-		return  this.soDuTK;
+		return  this.balance;
 	}
+	@Override
 	public boolean pay(double amount){
-		double soTienThanhToan = amount;
-		if( (amount + 50)<= soDuTK ){
-			soDuTK = soDuTK - amount;
+		double pament = amount;
+		if( (amount + 50)<= balance ){
+			balance = balance - amount;
 			return true;
 		}
 		return false;
 	}
-
-
+	@Override
     public boolean transfer(double amount, Transfer to){
-		double soTienChuyen = amount + Transfer.transferFee*amount;
-		double soTienNhan = amount;
-		if(soTienChuyen<=(this.soDuTK-50)){
+		double moneyTransfer = amount + Transfer.transferFee*amount;
+		double receiving = amount;
+		if(moneyTransfer<=(this.balance-50)){
 			
 			if(to instanceof BankAccount){
 				BankAccount ba =(BankAccount) to;
-				soDuTK -= soTienChuyen;
+				balance -= moneyTransfer;
 				ba.topUp(amount);
 				return true;
 			}
 			if(to instanceof EWallet){
 				EWallet ew =(EWallet) to;
-				soDuTK -=soTienChuyen;
+				balance -=moneyTransfer;
 				ew.topUp(amount);
 				return true;
 			}
@@ -48,10 +48,10 @@ public class BankAccount implements Payment, Transfer{
 	}
 
     public double topUp(double amount){
-		return soDuTK +=amount;
+		return balance +=amount;
 	}
     public String toString(){
-        return soTK + "," + rate + "," + soDuTK;
+        return accountNumber + "," + rate + "," + balance;
 
     }
 }

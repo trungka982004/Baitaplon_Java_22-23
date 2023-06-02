@@ -3,51 +3,11 @@ public class ConvenientCard implements Payment{
 	// code here
 	
     private String type;
-	private IDCard theDinhDanh;
-	private double soDuTK;
+	private IDCard idCard;
+	private double balance;
 	
-	public String getType() {
-		return this.type;
-	}
-	
-	public void topUp(double amount){ //tien nap
-		soDuTK += amount;
-	}
-	public IDCard getIDCard(){
-		return theDinhDanh;
-	}
-
-	public int getSoDinhDanh(){
-		return theDinhDanh.soDinhDanh;
-	}
-	@Override
-	//ham lay so du 
-	public double checkBalance(){ 
-		return  this.soDuTK;
-	}
-	@Override
-	//ham check da thanh toan thanh cong hay khong
-	public boolean pay(double amount){
-		double soTienThanhToan = 0.0;
-		if(type.equals("Student")){
-			soTienThanhToan = amount;
-			if( soTienThanhToan<= soDuTK ){
-				soDuTK -=soTienThanhToan;
-				return true;
-			}
-		}
-		else if(type.equals("Adult")) {
-			soTienThanhToan = amount + 0.01*amount;
-			if( soTienThanhToan <= soDuTK ){
-				soDuTK -=soTienThanhToan;
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public ConvenientCard(IDCard theDinhDanh) throws CannotCreateCard{
-		String date = theDinhDanh.getDayOfBirth();
+	public ConvenientCard(IDCard idCard) throws CannotCreateCard{
+		String date = idCard.getDayOfBirth();
 		String year = date.substring(6, 10);
 		int age = 2023 - Integer.parseInt(year);
 		if(age < 12){
@@ -59,13 +19,53 @@ public class ConvenientCard implements Payment{
 		}
 
 
-		this.theDinhDanh = theDinhDanh;
-		this.soDuTK = 100;
+		this.idCard = idCard;
+		this.balance = 100;
 	}
+
+	public String getType() {
+		return this.type;
+	}
+	
+	public void topUp(double amount){ //tien nap
+		balance += amount;
+	}
+	public IDCard getIDCard(){
+		return idCard;
+	}
+
+	public int getIDNumber(){
+		return idCard.IDnumber;
+	}
+	@Override
+	public double checkBalance(){ 
+		return  this.balance;
+	}
+	@Override
+	public boolean pay(double amount){
+		double pament = 0.0;
+		if(type.equals("Student")){
+			pament = amount;
+			if( pament<= balance ){
+				balance -=pament;
+				return true;
+			}
+		}
+		else if(type.equals("Adult")) {
+			pament = amount + 0.01*amount;
+			if( pament <= balance ){
+				balance -=pament;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	
 
 	@Override
 	//in theo format
 	public String toString(){ 
-		return theDinhDanh + "," + type  + "," + soDuTK;
+		return idCard + "," + type  + "," + balance;
 	}
 }

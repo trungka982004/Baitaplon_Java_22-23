@@ -1,23 +1,23 @@
 public class EWallet implements Payment, Transfer {
 	// code here
 	private int phoneNumber;
-	private double soDuTK;
+	private double balance;
 
 	public EWallet(int phoneNumber){
 		this.phoneNumber = phoneNumber;
-		this.soDuTK=0;
+		this.balance=0;
 	}
 	public int getPhoneNumber(){
 		return phoneNumber;
 	}
 	@Override
 	public double checkBalance(){
-		return  this.soDuTK;
+		return  this.balance;
 	}
 	public boolean pay(double amount){
-		double soTienThanhToan = amount;
-		if( soTienThanhToan<= soDuTK ){
-			soDuTK -= soTienThanhToan;
+		double pament = amount;
+		if( pament<= balance ){
+			balance -= pament;
 			return true;
 		}
 
@@ -26,20 +26,20 @@ public class EWallet implements Payment, Transfer {
 	}
 	
 	public boolean transfer(double amount, Transfer to){
-		double soTienChuyen = amount + 0.05*amount;
-		double soTienNhan = amount;
+		double moneyTransfer = amount + 0.05*amount;
+		double receiving = amount;
 		
 		
-		if(soTienChuyen<=soDuTK){
+		if(moneyTransfer<=balance){
 			if(to instanceof EWallet){
 				EWallet ew =(EWallet) to;
-				soDuTK -= soTienChuyen;
+				balance -= moneyTransfer;
 				ew.topUp(amount);
 				return true;
 			}
 			if(to instanceof BankAccount){
 				BankAccount ba = (BankAccount) to;
-				soDuTK-=soTienChuyen;
+				balance-=moneyTransfer;
 				ba.topUp(amount);
 				return true;
 			}
@@ -50,9 +50,9 @@ public class EWallet implements Payment, Transfer {
 
 
 	public double topUp(double amount){
-		return soDuTK +=amount;
+		return balance +=amount;
 	}
 	public String toString(){
-        return phoneNumber + "," + soDuTK;
+        return phoneNumber + "," + balance;
     }
 }
