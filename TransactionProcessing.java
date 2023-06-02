@@ -4,6 +4,7 @@ import java.io.*;
 public class TransactionProcessing {
     private ArrayList<Payment> paymentObjects;
     private IDCardManagement idcm;
+    private ArrayList<Bill> payUnSuccessful;
     // Phuong thuc khoi tao de doc danh sach the dinh danh va cac tai khoan thanh toan
     public TransactionProcessing(String idCardPath, String paymentPath) {
         idcm = new IDCardManagement(idCardPath);
@@ -175,7 +176,7 @@ public class TransactionProcessing {
     // Requirement 7
     public ArrayList<Bill> getUnsuccessfulTransactions(String path) {
         //code here
-        ArrayList<Bill> payUnSuccessful = new ArrayList<>();
+        payUnSuccessful = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(path))){
             String line;
             while((line = reader.readLine()) != null){
@@ -185,22 +186,22 @@ public class TransactionProcessing {
                 String payFor = parts[2];
                 String typeCard = parts[3];
                 int inForAccount = Integer.parseInt(parts[4]);
-                int count=0;
-                double amount = total;
+                //  int count=0;
+                boolean paySuccessful = false;
+                // double amount = 0;
                 if(typeCard.equals("EW")){
                     for(Payment pm : paymentObjects){
                         if(pm instanceof EWallet){
                             EWallet ew = (EWallet) pm;
-                            
                             if(ew.getPhoneNumber() == inForAccount){
-                                if(!ew.pay(amount)){
-                                    
-                                    count++;
+                                if(ew.pay(total)==false){
+                                    Bill bill = new Bill( billID,  total,  payFor);
+                                    payUnSuccessful.add(bill);
                                 }
                                 
                             }
                         }
-                    }
+                    }   
                 }
                 else if(typeCard.equals("BA")){
                     for(Payment pm : paymentObjects){
@@ -208,9 +209,9 @@ public class TransactionProcessing {
                             BankAccount ba = (BankAccount) pm;
                             
                             if(ba.getSoTK() == inForAccount){
-                                if(!ba.pay(amount)){
-                                    
-                                    count++;
+                                if(ba.pay(total)==false){
+                                    Bill bill = new Bill( billID,  total,  payFor);
+                                    payUnSuccessful.add(bill);
                                 }
                             }
                         }
@@ -220,22 +221,18 @@ public class TransactionProcessing {
                     for(Payment pm : paymentObjects){
                         if(pm instanceof ConvenientCard) {
                             ConvenientCard cc = (ConvenientCard) pm;
-                            IDCard idCards = cc.getIDCard();
                             
-                            if(idCards.getSoDinhDanh() == inForAccount ){
+                            
+                            if(cc.getSoDinhDanh() == inForAccount ){
 
-                                if(!cc.pay(amount)){
-                                    count++;
+                                if( cc.pay(total)==false){
+                                    Bill bill = new Bill( billID,  total,  payFor);
+                                    payUnSuccessful.add(bill);
                                 }
                             }
 
                         }
-                    }
-                }
-
-                if(count!=3){
-                    Bill bill = new Bill( billID,  total,  payFor);
-                    payUnSuccessful.add(bill);
+                    }   
                 }
             }
         } catch(IOException e) {
@@ -268,11 +265,12 @@ public class TransactionProcessing {
                                 if( total > maxPay){
                                     maxPay = total;
                                     largestPaymentByBA.clear();
-;                                    largestPaymentByBA.add(ba);
+                                    largestPaymentByBA.add(ba);
                                 }
                             }
                         }
                     }
+                    
                 }
             }
             

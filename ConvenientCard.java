@@ -16,6 +16,10 @@ public class ConvenientCard implements Payment{
 	public IDCard getIDCard(){
 		return theDinhDanh;
 	}
+
+	public int getSoDinhDanh(){
+		return theDinhDanh.soDinhDanh;
+	}
 	@Override
 	//ham lay so du 
 	public double checkBalance(){ 
