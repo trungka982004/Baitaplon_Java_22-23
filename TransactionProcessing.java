@@ -186,15 +186,12 @@ public class TransactionProcessing {
                 String payFor = parts[2];
                 String typeCard = parts[3];
                 int inForAccount = Integer.parseInt(parts[4]);
-                //  int count=0;
-                boolean paySuccessful = false;
-                // double amount = 0;
                 if(typeCard.equals("EW")){
                     for(Payment pm : paymentObjects){
                         if(pm instanceof EWallet){
                             EWallet ew = (EWallet) pm;
                             if(ew.getPhoneNumber() == inForAccount){
-                                if(ew.pay(total)==false){
+                                if(!ew.pay(total)){
                                     Bill bill = new Bill( billID,  total,  payFor);
                                     payUnSuccessful.add(bill);
                                 }
@@ -209,7 +206,7 @@ public class TransactionProcessing {
                             BankAccount ba = (BankAccount) pm;
                             
                             if(ba.getSoTK() == inForAccount){
-                                if(ba.pay(total)==false){
+                                if(!ba.pay(total)){
                                     Bill bill = new Bill( billID,  total,  payFor);
                                     payUnSuccessful.add(bill);
                                 }
@@ -225,7 +222,7 @@ public class TransactionProcessing {
                             
                             if(cc.getSoDinhDanh() == inForAccount ){
 
-                                if( cc.pay(total)==false){
+                                if( !cc.pay(total)){
                                     Bill bill = new Bill( billID,  total,  payFor);
                                     payUnSuccessful.add(bill);
                                 }
@@ -266,6 +263,9 @@ public class TransactionProcessing {
                                     maxPay = total;
                                     largestPaymentByBA.clear();
                                     largestPaymentByBA.add(ba);
+                                }
+                                else if(total == maxPay){
+                                    largestPaymentByBA.add(ba); 
                                 }
                             }
                         }

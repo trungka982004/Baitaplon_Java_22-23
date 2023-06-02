@@ -7,7 +7,7 @@ public class BankAccount implements Payment, Transfer{
     public BankAccount(int soTK, double rate){
         this.soTK =soTK;
         this.rate = rate;
-        this.soDuTK = 50;
+        this.soDuTK = 50.0;
     }
 	public int getSoTK(){
 		return soTK;
@@ -18,9 +18,8 @@ public class BankAccount implements Payment, Transfer{
 	}
 	public boolean pay(double amount){
 		double soTienThanhToan = amount;
-        double soDuTK = 50;
 		if( (amount + 50)<= soDuTK ){
-			soDuTK -=amount;
+			soDuTK = soDuTK - amount;
 			return true;
 		}
 		return false;
