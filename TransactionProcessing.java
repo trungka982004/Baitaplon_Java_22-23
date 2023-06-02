@@ -210,10 +210,7 @@ public class TransactionProcessing {
                     for(Payment pm : paymentObjects){
                         if(pm instanceof ConvenientCard) {
                             ConvenientCard cc = (ConvenientCard) pm;
-                            
-                            
                             if(cc.getIDNumber() == inForAccount ){
-
                                 if( !cc.pay(total)){
                                     Bill bill = new Bill( billID,  total,  payFor);
                                     payUnSuccessful.add(bill);
@@ -274,5 +271,40 @@ public class TransactionProcessing {
     //Requirement 9
     public void processTransactionWithDiscount(String path) {
         //code here
+        paymentObjects = new ArrayList<>();
+        try(BufferedReader reader = new BufferedReader(new FileReader(path))){
+            String line;
+            while((line = reader.readLine()) != null){
+                String[] parts = line.split(",");                    
+                int billID = Integer.parseInt(parts[0]);
+                double total = Double.parseDouble(parts[1]);
+                String payFor = parts[2];
+                String typeCard = parts[3];
+                int inForAccount = Integer.parseInt(parts[4]);
+                if(typeCard.equals("Ew")){
+                    for(Payment pm : paymentObjects){
+                        if(pm instanceof EWallet){
+                            EWallet ew = (EWallet) pm;
+                            if(ew.getPhoneNumber() == inForAccount){
+                                e.topDown(total);   
+                            }
+                        }
+                    }
+                }
+                if(typeCard.equals("BA")){
+                    for(Payment pm : paymentObjects){
+                        if(pm instanceof BankAccount){
+                            BankAccount ba = (BankAccount) pm;
+                            if(ba.getAccountNumber() == inForAccount){
+                                ba.topDown(total);   
+                            }
+                        }
+                    }
+                }
+                if()
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }

@@ -61,7 +61,9 @@ public class ConvenientCard implements Payment{
 		return false;
 	}
 
-	
+	public void topDown(doubble amount){
+		return balance -= amount;
+	}
 
 	@Override
 	//in theo format
