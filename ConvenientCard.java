@@ -61,7 +61,7 @@ public class ConvenientCard implements Payment{
 		return false;
 	}
 
-	public void topDown(doubble amount){
+	public double topDown(double amount){
 		return balance -= amount;
 	}
 

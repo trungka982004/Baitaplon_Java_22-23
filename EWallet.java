@@ -52,7 +52,7 @@ public class EWallet implements Payment, Transfer {
 	public double topUp(double amount){
 		return balance += amount;
 	}
-	public void topDown(doubble amount){
+	public double topDown(double amount){
 		return balance -= amount;
 	}
 	public String toString(){

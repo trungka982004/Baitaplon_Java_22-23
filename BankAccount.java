@@ -51,7 +51,7 @@ public class BankAccount implements Payment, Transfer{
 		return balance +=amount;
 	}
 
-	public void topDown(doubble amount){
+	public double topDown(double amount){
 		return balance -= amount;
 	}
 
